@@ -7,9 +7,8 @@
             width: 29%;
             float: left;
         }
-        .thinpanel {
+        .thin {
             width: 20%;
-            float: left;
         }
         iframe {
             height: 20em;
@@ -18,6 +17,8 @@
     </style>
 </head>
 <body>
+<!-- TODO make this page a lot better -->
+<a href="cgi-bin/auth_logout.py">Logout</a>
 <div class="panel">
     <button onclick="javascript:document.getElementById('action').contentWindow.location.reload();">Reload</button>
     <iframe id="action" src="cgi-bin/action.py"></iframe>
@@ -26,13 +27,17 @@
     <button onclick="javascript:document.getElementById('events').contentWindow.location.reload();">Reload</button>
     <iframe id="events" src="cgi-bin/events.py"></iframe>
 </div>
-<div class="thinpanel">
+<div class="panel thin">
     <button onclick="javascript:document.getElementById('view').contentWindow.location.reload();">Reload</button>
     <iframe id="view" src="cgi-bin/view.py"></iframe>
 </div>
-<div class="thinpanel">
+<div class="panel thin">
     <button onclick="javascript:document.getElementById('timeview').contentWindow.location.reload();">Reload</button>
     <iframe id="timeview" src="cgi-bin/timeview.py"></iframe>
+</div>
+<div class="panel">
+    <button onclick="javascript:document.getElementById('events').contentWindow.location.reload();">Reload</button>
+    <iframe id="login" src="login.html"></iframe>
 </div>
 </body>
 </html>

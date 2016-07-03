@@ -1,4 +1,7 @@
 import datetime
+import sqlite3
+import os
+import http.cookies
 
 errorcodes = {
     0: "USER_NOT_FOUND"
@@ -72,3 +75,20 @@ class CentralTime(datetime.tzinfo):
 
 def get_current_timezone():
     return CentralTime()  # Can't be bothered
+
+
+def verify_auth():
+    try:
+        cookie = http.cookies.SimpleCookie(os.environ["HTTP_COOKIE"])
+        session_id = cookie['session'].value
+
+        db = sqlite3.connect(timecard_db)
+        c = db.cursor()
+        c.execute("SELECT auth_name, session_begin FROM session WHERE session_id=?", (session_id,))
+        rows = c.fetchall()
+        if len(rows) != 1:
+            return False
+        return True  # TODO check for session timeout?
+    except (KeyError, http.cookies.CookieError):
+        return False  # No session
+

@@ -12,23 +12,29 @@ class User:
         self.logged_in = logged_in
 
 print("Content-Type: text/plain")
-print()
 
-form = cgi.FieldStorage()
-db = sqlite3.connect(timecard.timecard_db)
-c = db.cursor()
-c.execute("SELECT name, uid, logged_in FROM users")
-users = c.fetchall()
+if timecard.verify_auth():
 
-usermap = {}
-for k in users:
-    usermap[k[1]] = User(k[1], k[0], k[2])
+    form = cgi.FieldStorage()
+    db = sqlite3.connect(timecard.timecard_db)
+    c = db.cursor()
+    c.execute("SELECT name, uid, logged_in FROM users")
+    users = c.fetchall()
 
-c.execute("SELECT uid, date, event_type FROM events")
-events = c.fetchall()
+    usermap = {}
+    for k in users:
+        usermap[k[1]] = User(k[1], k[0], k[2])
 
-for event in sorted(events, key=lambda x: x[1], reverse=True):
-    print("{} {} at {}".format(usermap[event[0]].name, event[2], event[1]))
+    c.execute("SELECT uid, date, event_type FROM events")
+    events = c.fetchall()
 
-db.commit()
-db.close()
+    print()
+    for event in sorted(events, key=lambda x: x[1], reverse=True):
+        print("{} {} at {}".format(usermap[event[0]].name, event[2], event[1]))
+
+    db.commit()
+    db.close()
+else:
+    print("Status: 401 Unauthorized")
+    print()
+    print("<a href='/login.html'>Please login</a>")

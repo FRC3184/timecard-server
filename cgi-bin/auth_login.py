@@ -32,7 +32,7 @@ if 'user' in form and 'pass' in form:
             sessionCookie['session'] = session_id
             print(sessionCookie)
             print()
-            timecard.printredir("index.html")
+            timecard.printredir("/index.html")
         else:
             print()
             print("Incorrect password for user {}".format(username))
