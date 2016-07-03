@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Timecard</title>
+    <style type="text/css">
+        .panel {
+            width: 29%;
+            float: left;
+        }
+        .thinpanel {
+            width: 20%;
+            float: left;
+        }
+        iframe {
+            height: 20em;
+            width:100%;
+        }
+    </style>
+</head>
+<body>
+<div class="panel">
+    <button onclick="javascript:document.getElementById('action').contentWindow.location.reload();">Reload</button>
+    <iframe id="action" src="cgi-bin/action.py"></iframe>
+</div>
+<div class="panel">
+    <button onclick="javascript:document.getElementById('events').contentWindow.location.reload();">Reload</button>
+    <iframe id="events" src="cgi-bin/events.py"></iframe>
+</div>
+<div class="thinpanel">
+    <button onclick="javascript:document.getElementById('view').contentWindow.location.reload();">Reload</button>
+    <iframe id="view" src="cgi-bin/view.py"></iframe>
+</div>
+<div class="thinpanel">
+    <button onclick="javascript:document.getElementById('timeview').contentWindow.location.reload();">Reload</button>
+    <iframe id="timeview" src="cgi-bin/timeview.py"></iframe>
+</div>
+</body>
+</html>
