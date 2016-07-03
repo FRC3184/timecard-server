@@ -9,7 +9,7 @@ print()
 
 form = cgi.FieldStorage()
 if "name" in form:
-    db = sqlite3.connect("timecard.db")
+    db = sqlite3.connect(timecard.timecard_db)
     c = db.cursor()
     c.execute("INSERT INTO users(name) VALUES (?)", (form['name'].value,))
     timecard.printredir()

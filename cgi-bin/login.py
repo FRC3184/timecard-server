@@ -8,7 +8,7 @@ print("Content-Type: text/html")
 
 form = cgi.FieldStorage()
 if "name" in form:
-    db = sqlite3.connect("timecard.db")
+    db = sqlite3.connect(timecard.timecard_db)
     c = db.cursor()
 
     c.execute("SELECT uid, logged_in FROM users WHERE name=?", (form['name'].value,))

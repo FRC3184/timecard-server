@@ -14,7 +14,7 @@ if 'user' in form and 'pass' in form:
     username = form['user'].value
     password = form['pass'].value
 
-    db = sqlite3.connect("timecard.db")
+    db = sqlite3.connect(timecard.timecard_db)
     c = db.cursor()
     c.execute("SELECT pass, salt FROM auth WHERE user=?", (username,))
     rows = c.fetchall()

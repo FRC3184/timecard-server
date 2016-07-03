@@ -19,11 +19,17 @@ class User:
         self.name = name
         self.logged_in = logged_in
 
-print("Content-Type: text/plain")
+print("Content-Type: text/html")
 print()
 
+print(timecard.html_header.format(title="View Time", css='''
+th, table, td {
+    border: 1px solid black;
+}
+'''))
+
 form = cgi.FieldStorage()
-db = sqlite3.connect("timecard.db")
+db = sqlite3.connect(timecard.timecard_db)
 c = db.cursor()
 c.execute("SELECT name, uid, logged_in FROM users")
 users = c.fetchall()
@@ -36,8 +42,10 @@ c.execute("SELECT uid, date, event_type FROM events")
 events = c.fetchall()
 events = sorted(events, key=lambda x: x[1])
 
+print("<table>")
+
 # oh how i hate timezones
-print("Name\tTime Spent (hh:mm:ss)")
+print("<tr><th>Name</th><th>Time Spent (hh:mm:ss)</th></tr>")
 for uid, user in usermap.items():
     sumtime = 0
     uevents = list(filter(lambda x: x[0] == uid, events))
@@ -62,7 +70,10 @@ for uid, user in usermap.items():
     seconds %= 3600
     minutes = int(seconds // 60)
     seconds %= 60
-    print("{}\t{}:{}:{}".format(user.name, total_hours, minutes, int(seconds)))
+    print("<tr><td>{}</td><td>{}:{}:{}</td></tr>".format(user.name, total_hours, minutes, int(seconds)))
+
+print("</table>")
+print(timecard.html_ending)
 
 db.commit()
 db.close()

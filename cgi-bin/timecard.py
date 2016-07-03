@@ -7,6 +7,21 @@ errorcodes = {
 timeformat = "%Y-%m-%d %H:%M:%S"
 
 
+timecard_db = "../timecard.db"
+
+
+html_header = '''<!DOCTYPE html>
+<html>
+<head>
+    <title>{title}</title>
+    <style type="text/css">{css}</style>
+</head>
+<body>
+'''
+
+html_ending = '''</body></html>'''
+
+
 def err(code, debug_info):
     return "{}:{}:{}".format(code, errorcodes[code], debug_info)
 

@@ -15,7 +15,7 @@ print("Content-Type: text/plain")
 print()
 
 form = cgi.FieldStorage()
-db = sqlite3.connect("timecard.db")
+db = sqlite3.connect(timecard.timecard_db)
 c = db.cursor()
 c.execute("SELECT name, uid, logged_in FROM users")
 users = c.fetchall()
