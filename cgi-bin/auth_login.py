@@ -25,7 +25,8 @@ if 'user' in form and 'pass' in form:
             session_id = hashlib.md5(str(datetime.datetime.now())
                                      .encode('utf-8')).hexdigest()  # Set the id to be the hashed time
 
-            c.execute("INSERT INTO session (auth_name, session_id, session_begin) VALUES (?, ?, datetime('now'))",
+            c.execute("INSERT INTO session (auth_name, session_id, session_begin) VALUES "
+                      "(?, ?, datetime('now', 'localtime'))",
                       (username, session_id))
 
             sessionCookie = http.cookies.SimpleCookie()

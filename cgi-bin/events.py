@@ -11,7 +11,7 @@ class User:
         self.name = name
         self.logged_in = logged_in
 
-print("Content-Type: text/plain")
+print("Content-Type: text/html")
 
 if timecard.verify_auth():
 
@@ -30,7 +30,7 @@ if timecard.verify_auth():
 
     print()
     for event in sorted(events, key=lambda x: x[1], reverse=True):
-        print("{} {} at {}".format(usermap[event[0]].name, event[2], event[1]))
+        print("<span class='event'>{} {} at {}</span><br />".format(usermap[event[0]].name, event[2], event[1]))
 
     db.commit()
     db.close()

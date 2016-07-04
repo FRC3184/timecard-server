@@ -29,7 +29,6 @@ if timecard.verify_auth():
     print("</table>")
     print(timecard.html_ending)
 
-
     db.commit()
     db.close()
 else:

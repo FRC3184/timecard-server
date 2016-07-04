@@ -6,7 +6,7 @@ import sqlite3
 import time
 import datetime
 
-epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=datetime.timezone.utc)
+epoch = datetime.datetime.utcfromtimestamp(0)
 
 
 def unix_time(dt):
@@ -46,25 +46,20 @@ if timecard.verify_auth():
 
     print("<table>")
 
-    # oh how i hate timezones
     print("<tr><th>Name</th><th>Time Spent (hh:mm:ss)</th></tr>")
     for uid, user in usermap.items():
         sumtime = 0
         uevents = list(filter(lambda x: x[0] == uid, events))
         if len(uevents) % 2 != 0:
             now = datetime.datetime.now()
-            sumtime += int(unix_time(now.replace(tzinfo=datetime.timezone.utc) +
-                                     timecard.get_current_timezone().utcoffset(now)) -
-                           unix_time(datetime.datetime.strptime(uevents[-1][1], timecard.timeformat)
-                                     .replace(tzinfo=datetime.timezone.utc)))
+            sumtime += int(unix_time(now) -
+                           unix_time(datetime.datetime.strptime(uevents[-1][1], timecard.timeformat)))
             uevents = uevents[:-1]
         for i in range(0, len(uevents), 2):
             login = uevents[i]
             logout = uevents[i+1]
-            timelogin = unix_time(datetime.datetime.strptime(login[1], timecard.timeformat)
-                                  .replace(tzinfo=datetime.timezone.utc))
-            timelogout = unix_time(datetime.datetime.strptime(logout[1], timecard.timeformat)
-                                   .replace(tzinfo=datetime.timezone.utc))
+            timelogin = unix_time(datetime.datetime.strptime(login[1], timecard.timeformat))
+            timelogout = unix_time(datetime.datetime.strptime(logout[1], timecard.timeformat))
             sumtime += timelogout - timelogin
         timespent = datetime.timedelta(seconds=sumtime)
         seconds = timespent.total_seconds()

@@ -24,7 +24,9 @@ if timecard.verify_auth():
                 print()
                 print("Can't log out user because user is not logged in!")
             else:
-                c.execute("INSERT INTO events(uid, date, event_type) VALUES (?, datetime('now'), 'logout')", (int(uid),))
+                c.execute(
+                    "INSERT INTO events(uid, date, event_type) VALUES (?, datetime('now', 'localtime'), 'logout')",
+                    (int(uid),))
                 c.execute("UPDATE users SET logged_in=0 WHERE uid=?", (uid,))
                 print()
                 timecard.printredir()

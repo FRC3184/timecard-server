@@ -24,7 +24,8 @@ if timecard.verify_auth():
                 print()
                 print("Can't log in user because user is already logged in!")
             else:
-                c.execute("INSERT INTO events(uid, date, event_type) VALUES (?, datetime('now'), 'login')", (int(uid),))
+                c.execute("INSERT INTO events(uid, date, event_type) VALUES (?, datetime('now', 'localtime'), 'login')",
+                          (int(uid),))
                 c.execute("UPDATE users SET logged_in=1 WHERE uid=?", (uid,))
                 print()
                 timecard.printredir()
@@ -38,3 +39,4 @@ else:
     print("Status: 401 Unauthorized")
     print()
     print("<a href='/login.html'>Please login</a>")
+
