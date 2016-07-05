@@ -10,7 +10,7 @@ errorcodes = {
 timeformat = "%Y-%m-%d %H:%M:%S"
 
 
-timecard_db = "../timecard.db"
+timecard_db = "/srv/http/timecard.db"
 
 
 html_header = '''<!DOCTYPE html>
