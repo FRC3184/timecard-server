@@ -3,10 +3,6 @@ import sqlite3
 import os
 import http.cookies
 
-errorcodes = {
-    0: "USER_NOT_FOUND"
-}
-
 timeformat = "%Y-%m-%d %H:%M:%S"
 
 

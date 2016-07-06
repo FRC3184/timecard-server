@@ -4,10 +4,11 @@ import cgi
 import sqlite3
 import timecard
 
-print("Content-Type: text/html")
+form = cgi.FieldStorage()
+plain = 'plain' in form
+print("Content-Type: text/{}".format("plain" if plain else "html"))
 
 if timecard.verify_auth():
-    form = cgi.FieldStorage()
     if "name" in form:
         db = sqlite3.connect(timecard.timecard_db)
         c = db.cursor()
@@ -15,12 +16,13 @@ if timecard.verify_auth():
         c.execute("SELECT uid, logged_in FROM users WHERE name=?", (form['name'].value,))
         rows = c.fetchall()
         if len(rows) != 1:
-            print("Status: 500 Internal Server Error")
+            print("Status: 400 Bad Request")
             print()
-            print(timecard.err(0, len(rows)))
+            print("User not found: " + form['name'].value)
         else:
             uid = rows[0][0]
             if rows[0][1] == 0:  # User is not logged in
+                print("Status: 400 Bad Request")
                 print()
                 print("Can't log out user because user is not logged in!")
             else:
@@ -39,4 +41,7 @@ if timecard.verify_auth():
 else:
     print("Status: 401 Unauthorized")
     print()
-    print("<a href='/login.html'>Please login</a>")
+    if plain:
+        print("Not logged in/Session not valid")
+    else:
+        print("<a href='/login.html'>Please login</a>")
