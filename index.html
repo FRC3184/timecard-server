@@ -18,26 +18,40 @@
 </head>
 <body>
 <!-- TODO make this page a lot better -->
-<a href="cgi-bin/auth_logout.py">Logout</a>
+<a href="app/auth/logout">Logout</a> <a href="login.html">Login</a><br />
 <div class="panel">
-    <button onclick="javascript:document.getElementById('action').contentWindow.location.reload();">Reload</button>
-    <iframe id="action" src="cgi-bin/action.py"></iframe>
+    <form action="app/action/create" method="POST">
+        <span>Create User</span><br />
+        <label for="createname">Name</label> <input type="text" name="name" id="createname" />
+        <input type="submit" />
+    </form><br />
+    <form action="app/action/login" method="POST">
+        <span>Login</span><br />
+        <label for="loginname">Name</label> <input type="text" name="name" id="loginname" />
+        <input type="submit" />
+    </form><br />
+    <form action="app/action/logout" method="POST">
+        <span>Logout</span><br />
+        <label for="logoutname">Name</label> <input type="text" name="name" id="logoutname" />
+        <input type="submit" />
+    </form><br />
+    <form action="app/action/gen_barcode" method="POST">
+        <span>Create Barcode</span><br />
+        <label for="logoutname">Name</label> <input type="text" name="name" id="barcodename" />
+        <input type="submit" />
+    </form>
 </div>
 <div class="panel">
     <button onclick="javascript:document.getElementById('events').contentWindow.location.reload();">Reload</button>
-    <iframe id="events" src="cgi-bin/events.py"></iframe>
+    <iframe id="events" src="app/status/events"></iframe>
 </div>
 <div class="panel thin">
     <button onclick="javascript:document.getElementById('view').contentWindow.location.reload();">Reload</button>
-    <iframe id="view" src="cgi-bin/view.py"></iframe>
+    <iframe id="view" src="app/status/view"></iframe>
 </div>
 <div class="panel thin">
     <button onclick="javascript:document.getElementById('timeview').contentWindow.location.reload();">Reload</button>
-    <iframe id="timeview" src="cgi-bin/timeview.py"></iframe>
-</div>
-<div class="panel">
-    <button onclick="javascript:document.getElementById('events').contentWindow.location.reload();">Reload</button>
-    <iframe id="login" src="login.html"></iframe>
+    <iframe id="timeview" src="app/status/time"></iframe>
 </div>
 </body>
 </html>
