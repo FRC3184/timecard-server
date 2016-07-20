@@ -10,7 +10,7 @@ import sys
 
 def login(c, environ):
     form = timecard.get_data(environ)
-    plain = "plain" in form
+    plain = b"plain" in form
 
     content = [] if plain else timecard.html_begin()
     status = 200
@@ -52,7 +52,7 @@ def login(c, environ):
 
 def logout(c, environ):
     form = timecard.get_data(environ)
-    plain = "plain" in form
+    plain = b"plain" in form
 
     content = [] if plain else timecard.html_begin()
     status = 200

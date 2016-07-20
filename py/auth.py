@@ -54,7 +54,7 @@ def logout(c, environ):
     :param environ: WSGI Environment
     :return: Status, content, headers
     """
-    session_id = http.cookies.SimpleCookie(environ["HTTP_COOKIE"]).get("session")
+    session_id = http.cookies.SimpleCookie(environ["HTTP_COOKIE"]).get("session").value
     c.execute("DELETE FROM session WHERE session_id=?", (session_id,))
 
     return 303, [], [timecard.get_location_header("/")]
@@ -68,8 +68,7 @@ def verify_auth(c, environ):
     :return: True if the user login (by session cookie) is valid, otherwise false
     """
     try:
-        cookie = http.cookies.SimpleCookie(environ["HTTP_COOKIE"])
-        session_id = cookie['session'].value
+        session_id = http.cookies.SimpleCookie(environ["HTTP_COOKIE"]).get("session").value
 
         c.execute("SELECT auth_name, session_begin FROM session WHERE session_id=?", (session_id,))
         rows = c.fetchall()

@@ -51,7 +51,10 @@ def html_begin(title="Timecard", css=""):
                 <link rel="stylesheet" type="text/css" href="/css/main.css" />
                 <style type="text/css">
                     {_css}
-                </style
+                </style>
+                <script src="https://code.jquery.com/jquery-3.1.0.min.js"
+                 integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+                 crossorigin="anonymous"></script>
             </head>
             <body>
             """.format(_title=title, _css=css)]
@@ -72,6 +75,7 @@ def error(c, environ):
 def application(environ, start_response):
     handler_dict = {
         "": default,
+        "manage": status.fullview,
         "auth": {
             "login": auth.login,
             "logout": auth.logout

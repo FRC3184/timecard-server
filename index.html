@@ -3,23 +3,30 @@
 <head>
     <title>Timecard</title>
     <style type="text/css">
+        body, html{
+            height: 100%;
+            margin:0;
+            padding:.1em;
+            overflow:hidden;
+        }
         .panel {
-            width: 29%;
+            width: 40%;
             float: left;
+            height:100%;
         }
         .thin {
-            width: 20%;
+            width: 29%;
         }
         iframe {
-            height: 20em;
             width:100%;
+            height:100vh;
         }
     </style>
 </head>
 <body>
 <!-- TODO make this page a lot better -->
 <a href="app/auth/logout">Logout</a> <a href="login.html">Login</a><br />
-<div class="panel">
+<div class="panel thin">
     <form action="app/action/create" method="POST">
         <span>Create User</span><br />
         <label for="createname">Name</label> <input type="text" name="name" id="createname" />
@@ -41,17 +48,13 @@
         <input type="submit" />
     </form>
 </div>
-<div class="panel">
+<div class="panel thin">
     <button onclick="javascript:document.getElementById('events').contentWindow.location.reload();">Reload</button>
     <iframe id="events" src="app/status/events"></iframe>
 </div>
-<div class="panel thin">
+<div class="panel">
     <button onclick="javascript:document.getElementById('view').contentWindow.location.reload();">Reload</button>
-    <iframe id="view" src="app/status/view"></iframe>
-</div>
-<div class="panel thin">
-    <button onclick="javascript:document.getElementById('timeview').contentWindow.location.reload();">Reload</button>
-    <iframe id="timeview" src="app/status/time"></iframe>
+    <iframe id="view" src="app/manage"></iframe>
 </div>
 </body>
 </html>
