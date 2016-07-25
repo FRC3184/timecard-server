@@ -29,22 +29,18 @@
 <div class="panel thin">
     <form action="app/action/create" method="POST">
         <span>Create User</span><br />
-        <label for="createname">Name</label> <input type="text" name="name" id="createname" />
-        <input type="submit" />
-    </form><br />
-    <form action="app/action/login" method="POST">
-        <span>Login</span><br />
-        <label for="loginname">Name</label> <input type="text" name="name" id="loginname" />
-        <input type="submit" />
-    </form><br />
-    <form action="app/action/logout" method="POST">
-        <span>Logout</span><br />
-        <label for="logoutname">Name</label> <input type="text" name="name" id="logoutname" />
+        <label for="createname">Name</label> <input type="text" name="name" id="createname" /><br />
+        <label for="createtype">Type</label>
+        <select name="type" id="createtype">
+            <option value="mentor">Student</option>
+            <option value="mentor">Mentor</option>
+            <option value="parent">Parent</option>
+        </select>
         <input type="submit" />
     </form><br />
     <form action="app/action/gen_barcode" method="POST">
         <span>Create Barcode</span><br />
-        <label for="logoutname">Name</label> <input type="text" name="name" id="barcodename" />
+        <label for="barcodename">Name</label> <input type="text" name="name" id="barcodename" />
         <input type="submit" />
     </form>
 </div>

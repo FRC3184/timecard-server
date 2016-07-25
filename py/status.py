@@ -12,10 +12,11 @@ def unix_time(dt):
 
 
 class User:
-    def __init__(self, uid, name, logged_in):
+    def __init__(self, uid, name, logged_in, type):
         self.uid = uid
         self.name = name
         self.logged_in = logged_in
+        self.type = type
 
 
 def events(c, environ):
@@ -29,12 +30,12 @@ def events(c, environ):
     status = 200
     if auth.verify_auth(c, environ):
 
-        c.execute("SELECT name, uid, logged_in FROM users")
+        c.execute("SELECT name, uid, logged_in, type FROM users")
         users = c.fetchall()
 
         usermap = {}
         for k in users:
-            usermap[k[1]] = User(k[1], k[0], k[2])
+            usermap[k[1]] = User(k[1], k[0], k[2], k[3])
 
         c.execute("SELECT uid, date, event_type FROM events")
         events = c.fetchall()
@@ -76,12 +77,12 @@ def fullview(c, environ):
 
     if auth.verify_auth(c, environ):
 
-        c.execute("SELECT name, uid, logged_in FROM users")
+        c.execute("SELECT name, uid, logged_in, type FROM users")
         users = c.fetchall()
 
         usermap = {}
         for k in users:
-            usermap[k[1]] = User(k[1], k[0], k[2])
+            usermap[k[1]] = User(k[1], k[0], k[2], k[3])
 
         c.execute("SELECT uid, date, event_type FROM events")
         events = c.fetchall()
@@ -89,7 +90,7 @@ def fullview(c, environ):
 
         content += ["<table>"]
 
-        content += ["<tr><th>Name</th><th>Logged In</th><th>Time Spent (hh:mm:ss)</th></tr>"]
+        content += ["<tr><th>Name</th><th>Type</th><th>Logged In</th><th>Time Spent (hh:mm:ss)</th></tr>"]
         for uid, user in usermap.items():
             sumtime = 0
             uevents = list(filter(lambda x: x[0] == uid, events))
@@ -110,10 +111,11 @@ def fullview(c, environ):
             seconds %= 3600
             minutes = int(seconds // 60)
             seconds %= 60
-            content += ["<tr><td>{name}</td><td>{logged_in}<td>{hh}:{mm}:{ss}</td>"
+            content += ["<tr><td>{name}</td><td>{type}</td><td>{logged_in}<td>{hh}:{mm}:{ss}</td>"
                         "<td><button class='do-login' data-user='{name}'>Login</button></td>"
                         "<td><button class='do-logout' data-user='{name}'>Logout</button></td></tr>"
                         .format(name=user.name,
+                                type=user.type.capitalize(),
                                 logged_in=("Yes" if user.logged_in == 1 else "No"),
                                 hh=total_hours,
                                 mm=minutes,

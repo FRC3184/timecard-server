@@ -97,18 +97,26 @@ def create_user(c, environ):
 
     status = 200
     content = timecard.html_begin()
+    headers = []
 
     if auth.verify_auth(c, environ):
-        if "name" in form:
-            c.execute("INSERT INTO users(name) VALUES (?)", (form['name'],))
-            print()
+        if b"name" in form:
+            if b"type" in form:
+                name = form[b'name'][0].decode()
+                utype = form[b"type"][0].decode()
+                c.execute("INSERT INTO users(name, type) VALUES (?, ?)", (name, utype))
+                status = 303
+                headers = [timecard.get_location_header("/")]
+            else:
+                status = 400
+                content += ["No type specified"]
         else:
             status = 400
             content += ["No name specified"]
     else:
         status = 401
         content += ["<a href='/login.html'>Please login</a>"]
-    return status, content + timecard.html_end(), []
+    return status, content + timecard.html_end(), headers
 
 
 def gen_barcode(c, environ):
