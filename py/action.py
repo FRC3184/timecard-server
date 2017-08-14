@@ -5,7 +5,7 @@ import barcode.writer
 import barcode.codex
 from io import StringIO, BytesIO
 
-import sys
+import slack
 
 
 def login(c, environ):
@@ -31,10 +31,10 @@ def login(c, environ):
                     status = 400
                     content += ["Can't log in user because user is already logged in!"]
                 else:
-                    c.execute(
-                        "INSERT INTO events(uid, date, event_type) VALUES (?, datetime('now', 'localtime'), 'login')",
-                        (int(uid),))
-                    c.execute("UPDATE users SET logged_in=1 WHERE uid=?", (uid,))
+                    c.execute("UPDATE users SET logged_in=1, last_login=datetime('now', 'localtime') WHERE uid=?", (uid,))
+
+                    slack.send_message("{} has signed in".format(username))
+
                     # Redirect
                     status = 303
                     headers += [timecard.get_location_header("/")]
@@ -62,7 +62,7 @@ def logout(c, environ):
         if b"name" in form:
             username = form[b'name'][0].decode("utf-8")
 
-            c.execute("SELECT uid, logged_in FROM users WHERE UPPER(name)=?", (username.upper(),))
+            c.execute("SELECT uid, logged_in, last_login FROM users WHERE UPPER(name)=?", (username.upper(),))
             rows = c.fetchall()
             if len(rows) != 1:
                 status = 400
@@ -74,9 +74,12 @@ def logout(c, environ):
                     content += ["Can't log out user because user is not logged in!"]
                 else:
                     c.execute(
-                        "INSERT INTO events(uid, date, event_type) VALUES (?, datetime('now', 'localtime'), 'logout')",
-                        (int(uid),))
+                        "INSERT INTO sessions(uid, begin_time, end_time) VALUES (?, ?, datetime('now', 'localtime'))",
+                        (int(uid), rows[0][2]))
                     c.execute("UPDATE users SET logged_in=0 WHERE uid=?", (uid,))
+
+                    slack.send_message("{} has signed out".format(username))
+
                     # Redirect
                     status = 303
                     headers += [timecard.get_location_header("/")]

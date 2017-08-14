@@ -12,11 +12,12 @@ def unix_time(dt):
 
 
 class User:
-    def __init__(self, uid, name, logged_in, type):
+    def __init__(self, uid, name, logged_in, type, last_login):
         self.uid = uid
         self.name = name
         self.logged_in = logged_in
         self.type = type
+        self.last_login = last_login
 
 
 def events(c, environ):
@@ -28,25 +29,7 @@ def events(c, environ):
     """
     content = timecard.html_begin()
     status = 200
-    if auth.verify_auth(c, environ):
-
-        c.execute("SELECT name, uid, logged_in, type FROM users")
-        users = c.fetchall()
-
-        usermap = {}
-        for k in users:
-            usermap[k[1]] = User(k[1], k[0], k[2], k[3])
-
-        c.execute("SELECT uid, date, event_type FROM events")
-        events = c.fetchall()
-
-        for event in sorted(events, key=lambda x: x[1], reverse=True):
-            content += ["<span class='event'>{} {} at {}</span><br />"
-                        .format(usermap[event[0]].name, event[2], event[1])]
-
-    else:
-        status = 401
-        content += ["<a href='/login.html'>Please login</a>"]
+    content += ["Deprecated"]
     return status, content + timecard.html_end(), []
 
 
@@ -77,14 +60,14 @@ def fullview(c, environ):
 
     if auth.verify_auth(c, environ):
 
-        c.execute("SELECT name, uid, logged_in, type FROM users")
+        c.execute("SELECT name, uid, logged_in, type, last_login FROM users")
         users = c.fetchall()
 
         usermap = {}
         for k in users:
-            usermap[k[1]] = User(k[1], k[0], k[2], k[3])
+            usermap[k[1]] = User(k[1], k[0], k[2], k[3], k[4])
 
-        c.execute("SELECT uid, date, event_type FROM events")
+        c.execute("SELECT uid, begin_time, end_time FROM sessions")
         events = c.fetchall()
         events = sorted(events, key=lambda x: x[1])
 
@@ -94,17 +77,13 @@ def fullview(c, environ):
         for uid, user in usermap.items():
             sumtime = 0
             uevents = list(filter(lambda x: x[0] == uid, events))
-            if len(uevents) % 2 != 0:
-                now = datetime.datetime.now()
-                sumtime += int(unix_time(now) -
-                               unix_time(datetime.datetime.strptime(uevents[-1][1], config.timeformat)))
-                uevents = uevents[:-1]
-            for i in range(0, len(uevents), 2):
-                login = uevents[i]
-                logout = uevents[i + 1]
-                timelogin = unix_time(datetime.datetime.strptime(login[1], config.timeformat))
-                timelogout = unix_time(datetime.datetime.strptime(logout[1], config.timeformat))
-                sumtime += timelogout - timelogin
+            for event in uevents:
+                begin_time = unix_time(datetime.datetime.strptime(event[1], config.timeformat))
+                end_time = unix_time(datetime.datetime.strptime(event[2], config.timeformat))
+                sumtime += end_time - begin_time
+            if user.logged_in:
+                sumtime += unix_time(datetime.datetime.now()) - unix_time(datetime.datetime.strptime(user.last_login,
+                                                                                                     config.timeformat))
             timespent = datetime.timedelta(seconds=sumtime)
             seconds = timespent.total_seconds()
             total_hours = int(seconds // 3600)
@@ -150,14 +129,14 @@ def timeview(c, environ):
 
     if auth.verify_auth(c, environ):
 
-        c.execute("SELECT name, uid, logged_in FROM users")
+        c.execute("SELECT name, uid, logged_in, type, last_login FROM users")
         users = c.fetchall()
 
         usermap = {}
         for k in users:
-            usermap[k[1]] = User(k[1], k[0], k[2])
+            usermap[k[1]] = User(k[1], k[0], k[2], k[3], k[4])
 
-        c.execute("SELECT uid, date, event_type FROM events")
+        c.execute("SELECT uid, begin_time, end_time FROM sessions")
         events = c.fetchall()
         events = sorted(events, key=lambda x: x[1])
 
@@ -167,17 +146,13 @@ def timeview(c, environ):
         for uid, user in usermap.items():
             sumtime = 0
             uevents = list(filter(lambda x: x[0] == uid, events))
-            if len(uevents) % 2 != 0:
-                now = datetime.datetime.now()
-                sumtime += int(unix_time(now) -
-                               unix_time(datetime.datetime.strptime(uevents[-1][1], config.timeformat)))
-                uevents = uevents[:-1]
-            for i in range(0, len(uevents), 2):
-                login = uevents[i]
-                logout = uevents[i + 1]
-                timelogin = unix_time(datetime.datetime.strptime(login[1], config.timeformat))
-                timelogout = unix_time(datetime.datetime.strptime(logout[1], config.timeformat))
-                sumtime += timelogout - timelogin
+            for event in uevents:
+                begin_time = unix_time(datetime.datetime.strptime(event[1], config.timeformat))
+                end_time = unix_time(datetime.datetime.strptime(event[2], config.timeformat))
+                sumtime += end_time - begin_time
+            if user.logged_in:
+                sumtime += unix_time(datetime.datetime.now()) - unix_time(datetime.datetime.strptime(user.last_login,
+                                                                                                     config.timeformat))
             timespent = datetime.timedelta(seconds=sumtime)
             seconds = timespent.total_seconds()
             total_hours = int(seconds // 3600)

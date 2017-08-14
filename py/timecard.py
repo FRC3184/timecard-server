@@ -3,6 +3,7 @@ import config
 import auth
 import action
 import status
+import view_calendar
 from urllib.parse import parse_qs
 import sys
 
@@ -89,7 +90,8 @@ def application(environ, start_response):
         "status": {
             "events": status.events,
             "time": status.timeview,
-            "view": status.view
+            "view": status.view,
+            "calendar": view_calendar.calendar_view
         }
     }
 
