@@ -103,11 +103,7 @@ def fullview(c, environ):
         content += ["</table>"]
         content += ["""<script type="text/javascript">
         req = function(type, name) {
-            $.post("/app/action/" + type, {"name": name, "plain": true}, function() {
-                location.reload();
-            }).fail(function(jqXHR) {
-                alert("Failed to " + type + " " + name + ". Server says: " + jqXHR.responseText);
-            });
+            window.location.href = "/app/action/" + type + "?name=" + encodeURIComponent(name);
         };
 
         $(".do-login").click(function() {

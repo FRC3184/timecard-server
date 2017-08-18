@@ -17,8 +17,8 @@ def login(c, environ):
     headers = []
 
     if auth.verify_auth(c, environ):
-        if b"name" in form:
-            username = form[b'name'][0].decode("utf-8")
+        if "name" in form:
+            username = form['name'][0]
 
             c.execute("SELECT uid, logged_in FROM users WHERE UPPER(name)=?", (username.upper(),))
             rows = c.fetchall()
@@ -37,10 +37,10 @@ def login(c, environ):
 
                     # Redirect
                     status = 303
-                    headers += [timecard.get_location_header("/")]
+                headers += [timecard.get_location_header("/app/manage")]
         else:
             status = 400
-            print("No name specified")
+            content += ["No name specified"]
     else:
         status = 401
         if plain:
@@ -59,8 +59,8 @@ def logout(c, environ):
     headers = []
 
     if auth.verify_auth(c, environ):
-        if b"name" in form:
-            username = form[b'name'][0].decode("utf-8")
+        if "name" in form:
+            username = form['name'][0]
 
             c.execute("SELECT uid, logged_in, last_login FROM users WHERE UPPER(name)=?", (username.upper(),))
             rows = c.fetchall()
@@ -82,7 +82,7 @@ def logout(c, environ):
 
                     # Redirect
                     status = 303
-                    headers += [timecard.get_location_header("/")]
+                headers += [timecard.get_location_header("/app/manage")]
         else:
             status = 400
             content += ["No name specified"]
